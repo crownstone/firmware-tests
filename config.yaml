@@ -1,20 +1,20 @@
 tests:
-    - TestDimmerBoot
     - TestSwitchLock
-#    - TestDimmerBoot
-#    - TestDimmingAllowed
-#    - TestDimmerCurrentHolds
-#    - TestDimmerCurrentOverload
-#    - TestChipOverheat
-#    - TestDimmerTemperatureHolds
-#    - TestDimmerTemperatureOverheat
-#    - TestIgbtFailureDetectionHolds
-#    - TestIgbtFailureDetection
-#    - TestChipOverheatAndIgbtFailure
+    - TestDimmerBoot
+    - TestDimmingAllowed
+    - TestDimmerCurrentHolds
+    - TestDimmerCurrentOverload
+    - TestChipOverheat
+    - TestDimmerTemperatureHolds
+    - TestDimmerTemperatureOverheat
+    - TestIgbtFailureDetectionHolds
+    - TestIgbtFailureDetection
+    - TestChipOverheatAndIgbtFailure
 
 crownstones:
     - name: builtin
-      mac_address: D5:50:33:D5:DA:CE
+#      mac_address: D5:50:33:D5:DA:CE
+      mac_address: EF:C9:49:A3:C6:D8
       igbt_broken: false
     - name: builtin-broken
       mac_address: DC:98:9D:1D:E0:48
