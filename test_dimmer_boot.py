@@ -31,10 +31,9 @@ class TestDimmerBoot(BleBaseTest):
 		await self.core.control.setDimmer(15)
 		await SwitchStateChecker(self.state_checker_args, 0, True).check()
 
-		# # TODO: this test currently fails.
-		# self.logger.info("Checking if dimmed value will be set once the dimmer is ready.")
-		# await DimmerReadyChecker(self.state_checker_args, True).wait_for_state_match()
-		# await SwitchStateChecker(self.state_checker_args, 15, False).check()
+		self.logger.info("Checking if dimmed value will not be set once the dimmer is ready.")
+		await DimmerReadyChecker(self.state_checker_args, True).wait_for_state_match()
+		await SwitchStateChecker(self.state_checker_args, 0, True).check()
 
 		# ====================================================================
 		await self.dimmer_boot_dimmed()
