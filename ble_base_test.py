@@ -162,7 +162,9 @@ class BleBaseTest(BaseTest):
 		switch_state_before = await self.core.state.getSwitchState()
 		if unlock_switch:
 			await self.set_switch_lock(False)
-		await self.set_allow_dimming(True)
+			# Allow dimming unlocks the switch too.
+			await self.set_allow_dimming(True)
+
 		await self.core.control.setRelay(relay_on)
 		await self.core.control.setDimmer(dim_value)
 		switch_value = dim_value
