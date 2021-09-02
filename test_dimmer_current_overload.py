@@ -18,12 +18,16 @@ class TestDimmerCurrentOverload(BleBaseTest):
 
 	async def _run_with(self, dim_value: int, load_min: int, load_max: int):
 		await self.setup()
+		await self.set_switch(True, 0, False, False)
+		self.user_action_request(f"Plug in a load of {load_min}W - {load_max}W.")
+
+		# Check for the correct power usage.
+		await PowerUsageChecker(self.state_checker_args, load_min, load_max).check()
+
 		await DimmerReadyChecker(self.state_checker_args, True).wait_for_state_match()
 
 		await self.set_switch(False, dim_value, True, True)
 		await self.core.disconnect()
-
-		self.user_action_request(f"Plug in a load of {load_min}W - {load_max}W.")
 
 		# Expected error: current overload dimmer
 		error_bitmask = 1 << 1
@@ -31,9 +35,6 @@ class TestDimmerCurrentOverload(BleBaseTest):
 
 		# Relay should be turned on.
 		await SwitchStateChecker(self.state_checker_args, 0, True).check()
-
-		# Now we can check for the correct power usage.
-		await PowerUsageChecker(self.state_checker_args, load_min, load_max).check()
 
 		await self.connect()
 		self.logger.info("Checking if dimming is disabled.")
