@@ -74,7 +74,7 @@ class TestDimmerTemperatureOverheat(HelperDimmerTemperature):
 		return __class__.__name__
 
 	@staticmethod
-	def get_description(self) -> str:
+	def get_description() -> str:
 		return "Overheat the dimmer, which should turn on the relay, and disable dimming. The current-based softfuse will be disabled for this test."
 
 	async def _run_ble(self):
