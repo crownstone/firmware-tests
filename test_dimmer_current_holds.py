@@ -34,8 +34,9 @@ class TestDimmerCurrentHolds(BleBaseTest):
 		                        int(self.load_max * dim_value / 100)).wait_for_state_match()
 		await ErrorStateChecker(self.state_checker_args, 0).check()
 		self.user_action_request("Place a phone next to the crownstone.")
-		for i in range(0, 10):
-			self.user_action_request("Call the phone.")
+		times = 10
+		for i in range(0, times):
+			self.user_action_request(f"Call the phone ({i} / {times}).")
 			await ErrorStateChecker(self.state_checker_args, 0).check()
 			self.logger.info("Waiting 1 minute ...")
 			await asyncio.sleep(1 * 60)
