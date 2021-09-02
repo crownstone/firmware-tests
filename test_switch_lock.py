@@ -31,14 +31,12 @@ class TestSwitchLock(BleBaseTest):
 		await self.set_switch(False, 0, False, True)
 		await self.set_switch_should_fail(True, 0, unlock_switch=False)
 
-		# TODO: this test currently fails.
 		self.logger.info("Testing if dimming allowed overrides switch lock.")
 		await self.set_switch_lock(True)
 		await self.set_allow_dimming(True)
 		await SwitchLockChecker(self.state_checker_args, False).check()
 		await self.set_switch(False, 50)
 
-		# TODO: this test currently fails.
 		self.logger.info("Testing if you can't lock switch when dimming is allowed.")
 		await self.set_switch(False, 100, True, False)
 		await self.set_switch_lock(True, False)

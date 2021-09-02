@@ -33,7 +33,6 @@ class TestDimmingAllowed(BleBaseTest):
 		await DimmingAllowedChecker(self.state_checker_args, True).check()
 
 		await self.set_allow_dimming(False)
-		# TODO: this test currently fails.
 		await SwitchStateChecker(self.state_checker_args, 0, True).check()
 
 		self.logger.info("Checking if service data says dimming allowed is False.")
