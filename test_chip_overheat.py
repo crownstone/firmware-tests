@@ -23,13 +23,13 @@ class TestChipOverheat(BleBaseTest):
 		else:
 			await self.setup()
 		self.logger.info("Waiting for chip to cool off ...")
-		await ChipTempChecker(self.state_checker_args, 0, 50).wait_for_state_match(1 * 60)
+		await ChipTempChecker(self.state_checker_args, 0, 50).wait_for_state_match(5 * 60)
 		await DimmerReadyChecker(self.state_checker_args, True).wait_for_state_match()
 
 		await self.set_switch(True, 0, True, True)
 		await self.core.disconnect()
 
-		self.user_action_request(f"Heat up the chip, by blowing hot air on it.")
+		self.user_action_request(f"Start heating up the chip, by blowing hot air on it. Make sure you don't heat up the dimmer.")
 
 		# Expected error: chip temp overload
 		error_bitmask = 1 << 2
@@ -37,6 +37,8 @@ class TestChipOverheat(BleBaseTest):
 
 		# Temperature should still be close to the threshold.
 		await ChipTempChecker(self.state_checker_args, 70, 76).check()
+
+		await ErrorStateChecker(self.state_checker_args, error_bitmask).check()
 
 		# Relay should be turned off.
 		await SwitchStateChecker(self.state_checker_args, 0, False).check()
