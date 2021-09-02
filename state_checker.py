@@ -199,7 +199,8 @@ class ErrorStateChecker(StateChecker):
 		return None
 
 	async def check_via_command(self) -> bool or None:
-		self.received_value = await self.core.state.getErrors().bitMask
+		errors = await self.core.state.getErrors()
+		self.received_value = errors.bitMask
 		return (self.received_value == self.expected_value)
 
 	def get_error_string(self) -> str:
