@@ -135,6 +135,7 @@ class PowerUsageChecker(StateChecker):
 		if scan_data.payload.type not in [AdvType.CROWNSTONE_STATE, AdvType.SETUP_STATE, AdvType.CROWNSTONE_ERROR]:
 			return None
 		self.received_value = scan_data.payload.powerUsageReal
+		self.logger.debug(f"Received power usage of {self.received_value}W")
 		return (self.min_power <= self.received_value <= self.max_power)
 
 	def get_error_string(self) -> str:
@@ -161,6 +162,7 @@ class SwitchStateChecker(StateChecker):
 			return None
 		self.received_dimmer_value = scan_data.payload.switchState.dimmer
 		self.received_relay_value = scan_data.payload.switchState.relay
+		self.logger.debug(f"Received dimmer={self.received_dimmer_value}% and relay={self.received_relay_value}")
 		return (self.received_dimmer_value == self.expected_dimmer_value and self.received_relay_value == self.expected_relay_value)
 
 	async def check_via_command(self) -> bool or None:
@@ -189,12 +191,14 @@ class ErrorStateChecker(StateChecker):
 			# We want to be sure there is _no_ error. This means the error type is likely not being advertised.
 			if scan_data.payload.type in [AdvType.CROWNSTONE_ERROR, AdvType.SETUP_STATE]:
 				self.received_value = scan_data.payload.errorsBitmask.bitMask
+				self.logger.debug(f"Received error bitmask {self.received_value}")
 				return (scan_data.payload.errorsBitmask.bitMask == 0)
 			if scan_data.payload.type == AdvType.CROWNSTONE_STATE:
 				return (scan_data.payload.flags.hasError == False)
 			return None
 		if scan_data.payload.type in [AdvType.CROWNSTONE_ERROR, AdvType.SETUP_STATE]:
 			self.received_value = scan_data.payload.errorsBitmask.bitMask
+			self.logger.debug(f"Received error bitmask {self.received_value}")
 			return (self.received_value == self.expected_value)
 		return None
 
@@ -303,6 +307,7 @@ class ChipTempChecker(StateChecker):
 		if scan_data.payload.type not in [AdvType.CROWNSTONE_STATE, AdvType.SETUP_STATE, AdvType.CROWNSTONE_ERROR]:
 			return None
 		self.received_value = scan_data.payload.temperature
+		self.logger.debug(f"Received chip temperature of {self.received_value}")
 		return (self.chip_temp_min <= self.received_value <= self.chip_temp_max)
 
 	async def check_via_command(self) -> bool or None:
