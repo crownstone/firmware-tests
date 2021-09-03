@@ -24,7 +24,6 @@ class TestIgbtFailureDetection(BleBaseTest):
 		await self._run_with(True)
 
 	async def _run_with(self, setup_mode: bool):
-		self.user_action_request(f"Plug in the crownstone with 1 broken IGBT.")
 		if setup_mode:
 			await self.factory_reset()
 		else:
@@ -49,11 +48,12 @@ class TestIgbtFailureDetection(BleBaseTest):
 		await PowerUsageChecker(self.state_checker_args, self.load_min, self.load_max).wait_for_state_match()
 
 		# Expected error: IGBT on failure
-		error_bitmask = 1 << 5
+		error_bitmask = 1 << 4
 		await ErrorStateChecker(self.state_checker_args, error_bitmask).wait_for_state_match()
 		await SwitchStateChecker(self.state_checker_args, 0, True).check()
 
 		# Check if relay cannot be turned off, and dimmer not turned on.
 		await self.set_switch_should_fail(False, 100)
 
+		self.user_action_request(f"Plug out the load.")
 		await self.reset_errors()

@@ -4,6 +4,8 @@ from ble_base_test import BleBaseTest, BleBaseTestArgs
 from base_test import BaseTestException
 
 class TestIgbtFailureDetectionHolds(BleBaseTest):
+	use_crownstone_with_broken_igbt = False
+
 	def __init__(self, args: BleBaseTestArgs):
 		super().__init__(args)
 		self.load_min = 2500

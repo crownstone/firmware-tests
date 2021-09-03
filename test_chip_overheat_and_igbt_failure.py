@@ -20,7 +20,6 @@ class TestChipOverheatAndIgbtFailure(BleBaseTest):
 		return "Tests if the dimmer soft fuse overrides the chip temp soft fuse. A soft fuse turning the relay on overrides turning it off."
 
 	async def _run_ble(self):
-		self.user_action_request(f"Plug in the crownstone with 1 broken IGBT.")
 		await self.setup()
 		await DimmerReadyChecker(self.state_checker_args, True).wait_for_state_match()
 
@@ -38,7 +37,7 @@ class TestChipOverheatAndIgbtFailure(BleBaseTest):
 		self.logger.info("Waiting for chip to heat up ...")
 		# Expected error: chip temp overload AND igbt failure
 		error_bitmask = 1 << 2
-		error_bitmask += 1 << 5
+		error_bitmask += 1 << 4
 		await ErrorStateChecker(self.state_checker_args, error_bitmask).wait_for_state_match(5 * 60)
 
 		# Relay should be turned on.
