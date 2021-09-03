@@ -47,6 +47,10 @@ class BleBaseTest(BaseTest):
 
 
 	async def _run(self):
+		if self.use_crownstone_with_broken_igbt:
+			self.user_action_request(f"Plug in the crownstone with 1 broken IGBT ({self.address}).")
+		else:
+			self.user_action_request(f"Plug in the crownstone ({self.address}).")
 		await self.reset_config()
 		await self._run_ble()
 		await self.core.shutDown()
