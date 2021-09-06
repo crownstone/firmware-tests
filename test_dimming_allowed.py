@@ -40,7 +40,8 @@ class TestDimmingAllowed(BleBaseTest):
 		await DimmingAllowedChecker(self.state_checker_args, False).check()
 
 		# ===================================================================
-		self.logger.info("Checking if setting dimming allowed to False, turns relay on at boot.")
+		self.logger.info("Checking if setting dimming allowed to False, turns relay on at boot."
+		                 " While giving the firmware no time to store the relay state.")
 		await self.set_switch(False, 100, True, True)
 		await self.set_allow_dimming(False)
 		await self.core.control.reset()
