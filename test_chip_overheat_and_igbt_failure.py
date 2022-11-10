@@ -31,7 +31,7 @@ class TestChipOverheatAndIgbtFailure(BleBaseTest):
 		await PowerUsageChecker(self.state_checker_args, self.load_min, self.load_max).wait_for_state_match()
 
 		self.logger.info("Waiting for chip to cool off ...")
-		await ChipTempChecker(self.state_checker_args, 0, 50).wait_for_state_match(1 * 60)
+		await ChipTempChecker(self.state_checker_args, 0, 70).wait_for_state_match(1 * 60)
 		self.user_action_request(f"Heat up the chip, by blowing hot air on it.")
 
 		self.logger.info("Waiting for chip to heat up ...")
