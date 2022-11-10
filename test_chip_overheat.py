@@ -1,9 +1,19 @@
 import asyncio
+import logging
 from state_checker import *
 from ble_base_test import BleBaseTest, BleBaseTestArgs
 from base_test import BaseTestException
 
+logging.basicConfig(format='%(asctime)s %(levelname)-7s: %(message)s', level=logging.DEBUG)
+
 class TestChipOverheat(BleBaseTest):
+	# Same as config.
+	CHIP_TEMP_THRESHOLD = 75
+
+	CHIP_TEMP_MIN = CHIP_TEMP_THRESHOLD - 5
+	CHIP_TEMP_MAX = CHIP_TEMP_THRESHOLD + 2
+	CHIP_TEMP_COOL = CHIP_TEMP_THRESHOLD - 5
+
 
 	@staticmethod
 	def get_name() -> str:
@@ -23,7 +33,7 @@ class TestChipOverheat(BleBaseTest):
 		else:
 			await self.setup()
 		self.logger.info("Waiting for chip to cool off ...")
-		await ChipTempChecker(self.state_checker_args, 0, 50).wait_for_state_match(5 * 60)
+		await ChipTempChecker(self.state_checker_args, 0, self.CHIP_TEMP_COOL).wait_for_state_match(5 * 60)
 		await DimmerReadyChecker(self.state_checker_args, True).wait_for_state_match()
 
 		await self.set_switch(True, 0, True, True)
@@ -36,7 +46,7 @@ class TestChipOverheat(BleBaseTest):
 		await ErrorStateChecker(self.state_checker_args, error_bitmask).wait_for_state_match(5 * 60)
 
 		# Temperature should still be close to the threshold.
-		await ChipTempChecker(self.state_checker_args, 70, 76).check()
+		await ChipTempChecker(self.state_checker_args, self.CHIP_TEMP_MIN, self.CHIP_TEMP_MAX).check()
 
 		await ErrorStateChecker(self.state_checker_args, error_bitmask).check()
 
@@ -44,5 +54,8 @@ class TestChipOverheat(BleBaseTest):
 		await SwitchStateChecker(self.state_checker_args, 0, False).check()
 
 		await self.set_switch_should_fail(True, 100)
+
+		self.logger.info("Waiting for chip to cool off ...")
+		await ChipTempChecker(self.state_checker_args, 0, self.CHIP_TEMP_COOL).wait_for_state_match(5 * 60)
 
 		await self.reset_errors()
