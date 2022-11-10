@@ -26,17 +26,37 @@ class TestDimmerCurrentHolds(BleBaseTest):
 		await self.setup()
 		await DimmerReadyChecker(self.state_checker_args, True).wait_for_state_match()
 
+		# Make it easy for the user to plug in the correct load.
+		await self.set_switch(False, 100, True)
+
+		self.user_action_request(f"Plug in a load of {self.load_min}W - {self.load_max}W.")
+
+		await self.core.connect(self.address)
 		await self.set_switch(False, dim_value, True)
 		await self.core.disconnect()
 
-		self.user_action_request(f"Plug in a load of {self.load_min}W - {self.load_max}W.")
-		await PowerUsageChecker(self.state_checker_args, int(self.load_min * dim_value / 100),
-		                        int(self.load_max * dim_value / 100)).wait_for_state_match()
+		load_min = self.load_min
+		load_max = self.load_max
+		if (dim_value != 100):
+			# Dimmed load won't scale perfectly
+			load_min *= 0.75
+			load_max *= 1.25
+
+		await PowerUsageChecker(self.state_checker_args, int(load_min * dim_value / 100),
+		                        int(load_max * dim_value / 100)).wait_for_state_match()
 		await ErrorStateChecker(self.state_checker_args, 0).check()
+
+		times = 10
+		self.logger.info(f"Wait for {times} minutes")
+		for i in range(0, times):
+			await asyncio.sleep(1 * 60)
+			await ErrorStateChecker(self.state_checker_args, 0).check()
+
 		self.user_action_request("Place a phone next to the crownstone.")
 		times = 10
 		for i in range(0, times):
 			self.user_action_request(f"Call the phone ({i} / {times}).")
+			self.logger.info("Waiting 10 seconds ...")
+			await asyncio.sleep(10)
 			await ErrorStateChecker(self.state_checker_args, 0).check()
-			self.logger.info("Waiting 1 minute ...")
-			await asyncio.sleep(1 * 60)
+

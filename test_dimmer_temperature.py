@@ -64,7 +64,7 @@ class TestDimmerTemperatureHolds(HelperDimmerTemperature):
 
 
 class TestDimmerTemperatureOverheat(HelperDimmerTemperature):
-	def __init__(self, args: BleBaseTestArgs, load_min=300, load_max=500):
+	def __init__(self, args: BleBaseTestArgs, load_min=300, load_max=600):
 		super().__init__(args)
 		self.load_min = load_min
 		self.load_max = load_max
