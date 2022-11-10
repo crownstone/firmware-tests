@@ -4,8 +4,6 @@ from state_checker import *
 from ble_base_test import BleBaseTest, BleBaseTestArgs
 from base_test import BaseTestException
 
-logging.basicConfig(format='%(asctime)s %(levelname)-7s: %(message)s', level=logging.DEBUG)
-
 class TestChipOverheat(BleBaseTest):
 	# Same as config.
 	CHIP_TEMP_THRESHOLD = 75
